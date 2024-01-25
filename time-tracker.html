@@ -1,0 +1,105 @@
+<!doctype html>
+<html>
+<head>
+	<title>Time Tracker</title>
+</head>
+<body>
+<h3>Ridiculously Simple Time Tracker</h3>
+<label for="timer">Timer</label>
+<input id="timer">
+<label for="mode">Mode</label>
+<input id="mode">
+<hr/>
+<div id="buttons">
+</div>
+<hr/>
+<table>
+	<thead>
+		<tr id="headerRow">
+		</tr>
+	</thead>
+	<tbody>
+		<tr id="totalRow">
+		</tr>
+	</tbody>
+</table>
+<script>
+	const timer = document.getElementById("timer");
+	const buttonContainer = document.getElementById("buttons");
+	const tableHeaderRow = document.getElementById("headerRow");
+	const tableTotalRow = document.getElementById("totalRow");
+	const modeDisplay = document.getElementById("mode");
+	const modes = [
+		'dba.support',
+		'dba.work',
+		'tada.support',
+		'tada.work',
+		'tada.review',
+		'tada.help',
+		'other'
+	];
+	let time = 0;
+	let modeTimes = {};
+	let currentMode = 'other';
+	
+	// Track seconds since timer activated
+	let interval = setInterval(incTime, 1000);
+	
+	modes.forEach(mode => {
+		modeTimes[mode] = 0;
+	});
+	
+	buildElements();
+	resetTimer(currentMode);
+	
+	function buildElements() {
+		modes.forEach(mode => {
+			let button = document.createElement('button');
+			button.appendChild(document.createTextNode(mode));
+			button.setAttribute('onclick', "resetTimer('" + mode + "')");
+			buttonContainer.appendChild(button);
+			
+			let tableHeader = document.createElement('th');
+			tableHeader.appendChild(document.createTextNode(mode));
+			tableHeader.setAttribute('id', 'th_' + mode);
+			tableHeaderRow.appendChild(tableHeader);
+			
+			let tableData = document.createElement('td');
+			tableData.appendChild(document.createTextNode(formatTime(modeTimes[mode])));
+			tableData.setAttribute('id', 'td_' + mode);
+			tableTotalRow.appendChild(tableData);
+		});
+	}
+
+	// Increment time, display hourly value (rough format) since timer started
+	function incTime() {
+		time++;
+		timer.value = formatTime(time);
+	}
+	
+	// Reset time
+	function resetTimer(mode) {
+		// Track accumulated time
+		modeTimes[currentMode] += time;
+		console.log(modeTimes[currentMode]);
+		console.log(document.getElementById('td_' + currentMode).childNodes[0]);
+		document.getElementById('td_' + currentMode).childNodes[0].data = formatTime(modeTimes[currentMode]);
+		
+		// Reset time
+		time = 0;
+		
+		// Switch mode
+		currentMode = mode;
+		modeDisplay.value = currentMode;
+	}
+	
+	function formatTime(val) {
+		return padTime(Math.floor(val / 3600) + '') + ':' + padTime(Math.floor(val / 60) + '') + ':' + padTime(val % 60 + '');
+	}
+	
+	function padTime(val) {
+		return val.padStart(2, '0');
+	}
+</script>
+</body>
+</html>
