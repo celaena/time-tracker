@@ -95,7 +95,7 @@
 	}
 	
 	function formatTime(val) {
-		return padTime(Math.floor(val / 3600) + '') + ':' + padTime(Math.floor(val / 60) + '') + ':' + padTime(val % 60 + '');
+		return padTime(Math.floor(val / 3600) + '') + ':' + padTime(Math.floor(val / 60) % 60 + '') + ':' + padTime(val % 60 + '');
 	}
 	
 	function padTime(val) {
